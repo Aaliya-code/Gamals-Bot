@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -34,11 +35,11 @@ double turnmulti;
         
  
         // Set motor directions 
-        //frontLeft.setDirection(DcMotor.Direction.REVERSE); 
-        //bl.setDirection(DcMotor.Direction.REVERSE); 
-        //br.setDirection(DcMotor.Direction.FORWARD); 
-        //frontRight.setDirection(DcMotor.Direction.FORWARD); 
-        // arm.setDirection(DcMotorEx.Direction.REVERSE); 
+        fl.setDirection(DcMotor.Direction.REVERSE); 
+        bl.setDirection(DcMotor.Direction.REVERSE); 
+        br.setDirection(DcMotor.Direction.FORWARD); 
+        fr.setDirection(DcMotor.Direction.FORWARD); 
+        arm.setDirection(DcMotorEx.Direction.REVERSE); 
  
         // Set motors to brake when at zero power 
          fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); 
@@ -73,18 +74,23 @@ double turnmulti;
  
              // Arm control with presets on gamepad2 
  
-             // Manual control with gamepad1 D-pad 
+             // Manual control with gamepad1 D-pad
+             //Human player specimen
              if (gamepad1.y) { 
-                 arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); 
-                 arm.setPower(0.3); // Move up 
-                 targetPosition = arm.getCurrentPosition(); // Update target position 
+                 arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                 arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER); 
+                 arm.setPower(0.5); // Move up 
+                 moveArmToPosition(2350);
+                 //targetPosition = arm.getCurrentPosition(); // Update target position 
                  telemetry.addLine("Manual Move Up"); 
                  
              } 
           else if (gamepad1.a) { 
-                 arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); 
-                 arm.setPower(-0.3); // Move down 
-                 targetPosition = arm.getCurrentPosition(); // Update target position 
+                 arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                 arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER); 
+                 arm.setPower(0); // Move down 
+                 moveArmToPosition(-105);
+                 //targetPosition = arm.getCurrentPosition(); // Update target position 
                  telemetry.addLine("Manual Move Down"); 
                  
          }
@@ -100,12 +106,12 @@ double turnmulti;
                  telemetry.addLine("Preset Intake Out"); 
                  
          } 
-             else { 
+             /*else { 
                  // Apply holding power to maintain the last set position 
                  arm.setTargetPosition(targetPosition); 
                  arm.setMode(DcMotor.RunMode.RUN_TO_POSITION); 
                  arm.setPower(HOLD_POWER); 
-             } 
+             }*/ 
  
              // Claw control 
              if (gamepad1.x) {
