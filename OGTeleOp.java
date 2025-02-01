@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @TeleOp
 
-public class FullTeleOp extends LinearOpMode{
+public class OGTeleOp extends LinearOpMode {
 
     DcMotor fl, fr, bl, br; 
     DcMotor arm; 
@@ -16,6 +16,9 @@ public class FullTeleOp extends LinearOpMode{
 double strafemulti;
 double forwardmulti;
 double turnmulti;
+boolean isPressed;
+boolean isDown = true;
+boolean lastCycle = false, currCycle = false;
  
  //Holding power to counteract gravity 
    final double HOLD_POWER = 0.5; 
@@ -74,21 +77,56 @@ double turnmulti;
              // Arm control with presets on gamepad2 
  
              // Manual control with gamepad1 D-pad 
-             if (gamepad1.y) { 
+             if (gamepad1.dpad_down) { 
                  arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); 
-                 arm.setPower(0.3); // Move up 
+                 arm.setPower(0.5); // Move up 
                  targetPosition = arm.getCurrentPosition(); // Update target position 
                  telemetry.addLine("Manual Move Up"); 
                  
              } 
-          else if (gamepad1.a) { 
+          else if (gamepad1.dpad_up) { 
                  arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); 
-                 arm.setPower(-0.3); // Move down 
+                 arm.setPower(-0.5); // Move down 
                  targetPosition = arm.getCurrentPosition(); // Update target position 
                  telemetry.addLine("Manual Move Down"); 
                  
          }
-          else if (gamepad2.x) { 
+         else{
+          arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+          arm.setTargetPosition(targetPosition);
+         }
+         if (gamepad1.back) { //Home Positon
+                
+                 targetPosition = 0; 
+                 claw.setPosition(0.5);
+         }
+         
+         else if (gamepad1.a) { // spcimen grab position
+                claw.setPosition(1); 
+                targetPosition = -2350; 
+         }
+         
+         else if (gamepad1.x) { // Lower bucket scoring
+                
+                targetPosition = -1610;
+                claw.setPosition(0.5);
+            }
+            
+            else if (gamepad1.y) { // sample grab
+                targetPosition = -2660;
+                claw.setPosition(1);
+            }
+            
+            else if(gamepad1.b) { // specimen hang
+                targetPosition = -890;
+            }
+            
+            else if(gamepad1.left_bumper) { //submersable 
+                targetPosition = 2270;
+            }
+            
+                
+          /*else if (gamepad1.x) { 
                  arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); 
                  arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER); 
                  arm.setTargetPosition(-6729); 
@@ -99,21 +137,36 @@ double turnmulti;
                   targetPosition = arm.getCurrentPosition(); // Update target position 
                  telemetry.addLine("Preset Intake Out"); 
                  
-         } 
+         }*/ 
              else { 
                  // Apply holding power to maintain the last set position 
                  arm.setTargetPosition(targetPosition); 
                  arm.setMode(DcMotor.RunMode.RUN_TO_POSITION); 
                  arm.setPower(HOLD_POWER); 
              } 
+             
+             
+             
  
              // Claw control 
-             if (gamepad1.x) {
+             /*if (gamepad1.x) {
                  claw.setPosition(0); 
              }
              if (gamepad1.b){
                   claw.setPosition(1); 
-             }
+             }*/
+             
+             lastCycle = currCycle;
+            currCycle = gamepad1.right_bumper;
+            telemetry.addData("Claw Last", lastCycle);
+            telemetry.addData("Claw", currCycle);
+            if (currCycle && !lastCycle) {
+                isDown = !isDown;
+                if (isDown) {
+                    claw.setPosition(0.5);  
+                } else {
+                    claw.setPosition(1);
+                }
              
  
                 
@@ -129,6 +182,7 @@ double turnmulti;
              telemetry.update(); 
          } 
      } 
+   }
  
       // Method to move arm to a specific position using encoder 
      private void moveArmToPosition(int position) { 
@@ -144,8 +198,15 @@ double turnmulti;
          arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER); // Reset to manual 
 
     } 
-} 
+
+}
+
  
+
+
+
+ 
+
 
 
 
