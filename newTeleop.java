@@ -20,13 +20,13 @@ public class NewTeleOp_Aaliya extends LinearOpMode {
     boolean isPressed;
     boolean isDown = true;
     boolean lastCycle = false, currCycle = false;
-    //int maxArmPosition = 2810;
-    //int minArmPosition = 0;
+    int maxArmPosition = 2653;
+    int minArmPosition = 0;
     
-    //int armPosition = 0;
-    //int armMoveLength = 100;
+    int armPosition = 0;
+    int armMoveLength = 100;
     
-    //boolean isopModeValueCalculated = false;
+    boolean isopModeValueCalculated = false;
     //double intakePosition = 0.5; // Default intake position
    // boolean isManualMode = false;
    
@@ -84,28 +84,32 @@ public class NewTeleOp_Aaliya extends LinearOpMode {
         while (opModeIsActive()) {
             // Gamepad control inputs
             
-            /*if (gamepad1.dpad_up) {
-                if (armPosition < maxArmPosition) {
+            if (gamepad1.dpad_up) {
+                if (armPosition > minArmPosition) {
                     if (isopModeValueCalculated == false) {
                         armPosition = -(arm.getCurrentPosition());
-                        armPosition = armPosition + armMoveLength;
+                        armPosition = armPosition - armMoveLength;
                         telemetry.addData ("Arm Free Position", armPosition);
                         isopModeValueCalculated = true;
                     }
                 }
             
-            move_arm(-armPosition);
+            move_arm(armPosition);
             }
             else if (gamepad1.dpad_down) {
-                if (armPosition > minArmPosition) {
-                    armPosition = -(arm.getCurrentPosition());
+                if (armPosition < maxArmPosition) {
+                    if(isopModeValueCalculated == false) {
+                    armPosition = (arm.getCurrentPosition());
                     armPosition = armPosition - armMoveLength;
                     telemetry.addData("Arm Free Position", armPosition);
                     isopModeValueCalculated = true;
                 }
             }
-            move_arm(-armPosition);
-            
+            move_arm(armPosition);
+            }
+            else {
+                isopModeValueCalculated = false;
+            }
             // Arm control
             if (gamepad1.a) { //Home Positon
                 
